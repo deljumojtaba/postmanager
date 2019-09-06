@@ -57,6 +57,12 @@ export default new Router({
       beforeEnter: isLoggedIn
     },
     {
+      path: '/delete_user',
+      name: 'EditUser',
+      component: EditUser,
+      beforeEnter: isLoggedIn
+    },
+    {
       path: '/error',
       name: 'Error',
       component: Error

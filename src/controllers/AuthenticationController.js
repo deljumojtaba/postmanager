@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const database = require('../database')
+const Post = require('../models/post.model')
+
 
 module.exports = {
   async register (req, res) {
@@ -84,6 +86,19 @@ module.exports = {
       console.log(newUser)
       res.json({ success: true, message: 'User has been updated' })
     } catch (error) {
+      res.status(400).send({
+        error: `An error has occured ${error}`
+      })
+    }
+  },
+  async deleteUser (req, res) {
+    try {
+      
+      const user = await database.User.findByIdAndDelete(req.body._id)
+      const posts = await Post.deleteMany({author:req.body.username})
+      console.log(posts)
+      res.json({user,posts})
+    }catch{
       res.status(400).send({
         error: `An error has occured ${error}`
       })

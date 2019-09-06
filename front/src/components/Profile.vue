@@ -23,6 +23,12 @@
           </v-list-tile>
           <div class="text-xs-right">
             <v-btn :to="'/edit_user'" dark color="primary" class="mt-2">Edit info</v-btn>
+             <v-btn dark color="red" @click="removeUser(user)">
+              <v-icon class="mr-1">delete</v-icon>
+              delete
+      
+            </v-btn>
+
           </div>
         </v-list>
       </v-flex>
@@ -34,6 +40,7 @@
 
 <script>
 import store from '@/store/store'
+import PostService from '../services/PostService'
 export default {
   name: 'Profile',
   data: () => ({
@@ -51,6 +58,15 @@ export default {
         { icon: 'face', title: 'lastName', subtitle: this.user.lastName ? this.user.lastName : 'No information' },
         { icon: 'phone_iphone', title: 'mobile', subtitle: this.user.mobile ? this.user.mobile : 'No information' }
       ]
+    },
+     async removeUser (user) {
+      PostService.deleteUser(user)
+      this.$store.dispatch('logoutUser')
+        .then(() => this.$router.push('/'))
+        .catch(error => console.log(error))
+    },
+    showDialog () {
+
     }
   },
   computed: {

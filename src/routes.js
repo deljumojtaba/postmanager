@@ -54,4 +54,7 @@ module.exports = (router) => {
   router.post('/api/save_user', (req, res) => {
     AuthenticationController.saveUser(req, res)
   })
+  router.post('/api/delete_user' , (req, res) => {
+    AuthenticationController.deleteUser(req, res)
+  })
 }

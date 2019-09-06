@@ -33,8 +33,8 @@ export default {
     const response = await Api().post('/api/save_user', user)
     return response.data
   },
-  async deleteUser (user) {
-    const response = await Api().post('/api/save_user', user)
+  async deleteUser (userID) {
+    const response = await Api().post('/api/delete_user', userID)
     return response.data
   }
 }

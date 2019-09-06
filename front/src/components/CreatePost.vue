@@ -61,7 +61,7 @@ export default {
     submit () {
       if (this.$refs.form.validate()) {
         const newPost = {
-          author: JSON.parse(localStorage.getItem('user')).username,
+          author: JSON.parse(localStorage.getItem('user')).username,        
           title: this.title,
           image: this.image,
           text: this.text

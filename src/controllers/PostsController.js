@@ -1,4 +1,5 @@
 const Post = require('../models/post.model')
+const User = require('../models/user.model');
 
 module.exports = {
   async index (req, res) {
@@ -17,7 +18,12 @@ module.exports = {
   },
   async createPost (req, res) {
     try {
-      const post = await new Post(req.body).save()
+      const post = await new Post({
+        title:req.body.title,
+        text: req.body.text,
+        author: req.body.author
+
+      }).save()
       res.json(post)
     } catch (error) {
       res.status(400).send({
