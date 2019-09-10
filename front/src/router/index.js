@@ -11,6 +11,8 @@ import Post from '@/components/Post'
 import CreatePost from '@/components/CreatePost'
 import EditPost from '@/components/EditPost'
 import Adminpanel from '@/components/Adminpanel'
+import UserPosts from '@/components/UserPosts'
+
 
 Vue.use(Router)
 const isLoggedIn = (to, from, next) => {
@@ -90,7 +92,14 @@ export default new Router({
       name: 'DeletePost',
       component: EditPost,
       beforeEnter: isLoggedIn
+    },
+    {
+      path: '/user_posts',
+      name: 'UserPosts',
+      component: UserPosts,
+      beforeEnter: isLoggedIn
     }
+
   ],
   mode: 'history'
 })

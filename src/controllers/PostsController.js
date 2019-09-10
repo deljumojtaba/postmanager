@@ -53,6 +53,16 @@ module.exports = {
       })
     }
   },
+  async userPosts (req, res) {
+    try {
+      const posts = await Post.find({author:req.body.username})
+      res.json(posts)
+    } catch (error) {
+      res.status(400).send({
+        error: `An error has occured ${error}`
+      })
+    }
+  },
   async savePost (req, res) {
     try {
       const post = await Post.findByIdAndUpdate(req.body.id, req.body)

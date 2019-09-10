@@ -26,14 +26,13 @@
              <v-btn dark color="red" @click="removeUser(user)">
               <v-icon class="mr-1">delete</v-icon>
               delete
-      
             </v-btn>
+            <v-btn dark color="primary" class="mt-2" @click="userAllPosts(user)">posts info</v-btn>
+
 
           </div>
         </v-list>
       </v-flex>
-  <p v-if="user.role===admin">
-          admin panel </p>
     </v-layout>
   </v-container>
 </template>
@@ -65,8 +64,11 @@ export default {
         .then(() => this.$router.push('/'))
         .catch(error => console.log(error))
     },
-    showDialog () {
+    
+    async userAllPosts (user) {
 
+         this.$router.push('/user_posts')
+        
     }
   },
   computed: {

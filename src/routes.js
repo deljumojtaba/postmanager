@@ -34,6 +34,9 @@ module.exports = (router) => {
   router.get('/api/post/:id', (req, res) => {
     PostsController.viewOne(req, res)
   })
+  router.post('/api/user_posts', (req, res) => {
+    PostsController.userPosts(req, res)
+  })
 
   router.get('/api/edit/:id', (req, res) => {
     PostsController.viewOne(req, res)

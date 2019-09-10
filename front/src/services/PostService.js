@@ -36,5 +36,9 @@ export default {
   async deleteUser (userID) {
     const response = await Api().post('/api/delete_user', userID)
     return response.data
+  },
+  async userPosts (user) {
+    const response = await Api().post('/api/user_posts', user)
+    return response.data
   }
 }
