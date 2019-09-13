@@ -7,6 +7,11 @@ const commentSchema = new mongoose.Schema({
         minlength: 2
 
     },
+    author: {
+        type: String,
+        required: true
+        
+      },
    
     owner: {
         type: mongoose.Schema.Types.ObjectId,

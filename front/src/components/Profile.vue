@@ -34,12 +34,20 @@
             </v-list-tile-content>
           </v-list-tile>
           <div class="text-xs-right">
-            <v-btn :to="'/edit_user'" dark color="primary" class="mt-2">Edit info</v-btn>
+            <v-btn :to="'/edit_user'" dark color="orange" class="mt-2">
+              <v-icon class="mr-1">edit</v-icon>
+            Edit info</v-btn>
              <v-btn dark color="red" @click="removeUser(user)">
               <v-icon class="mr-1">delete</v-icon>
               delete
             </v-btn>
-            <v-btn dark color="primary" class="mt-2" @click="userAllPosts(user)">posts info</v-btn>
+            <v-btn dark color="primary" class="mt-2" @click="userAllPosts(user)">
+              <v-icon class="mr-1">build</v-icon>
+              posts info</v-btn>
+             <v-btn v-if="user.role === 'admin'" dark color="green" @click="AllUsers()">
+              <v-icon class="mr-1">people</v-icon>
+              all users
+            </v-btn>
 
 
           </div>
@@ -98,6 +106,13 @@ export default {
     savedAvatar() {
       this.saving = false
       this.saved = true
+    },
+    async AllUsers() {
+      // PostService.getAllUser()
+      // .then(() => this.$router.push('/allusers'))
+        // .catch(error => console.log(error))
+        this.$router.push('/allusers')
+
     }
   },
   computed: {

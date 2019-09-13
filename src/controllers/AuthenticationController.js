@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const database = require('../database')
 const Post = require('../models/post.model')
+const User = require('../models/user.model')
+
 
 
 module.exports = {
@@ -24,6 +26,8 @@ module.exports = {
   },
   async addadmin (req, res) {
     try {
+      const admin = await database.User.findOne({role:'admin'})
+      if(admin) return res.status(404).send('Admin Already Exists.');
       const user = await new database.User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -99,6 +103,16 @@ module.exports = {
       console.log(posts)
       res.json({user,posts})
     }catch{
+      res.status(400).send({
+        error: `An error has occured ${error}`
+      })
+    }
+  },
+  async allusers (req, res) {
+    try {
+      const users = await database.User.find ({})
+      res.json(users)
+    } catch (error) {
       res.status(400).send({
         error: `An error has occured ${error}`
       })

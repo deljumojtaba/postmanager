@@ -10,7 +10,7 @@ import Error from '@/components/Error'
 import Post from '@/components/Post'
 import CreatePost from '@/components/CreatePost'
 import EditPost from '@/components/EditPost'
-import Adminpanel from '@/components/Adminpanel'
+import Allusers from '@/components/Allusers'
 import UserPosts from '@/components/UserPosts'
 
 
@@ -41,9 +41,9 @@ export default new Router({
       component: Register
     },
     {
-      path: '/adminpanel',
-      name: 'Adminpanel',
-      component: Adminpanel,
+      path: '/allusers',
+      name: 'Allusers',
+      component: Allusers,
       beforeEnter: isLoggedIn
     },
     {

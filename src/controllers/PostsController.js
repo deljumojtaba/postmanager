@@ -47,11 +47,15 @@ module.exports = {
   async viewOne (req, res) {
     try {
       const postId = req.params.id
-      const post = await Post.findOne({_id: postId})
+      const post = await Post.findByIdAndUpdate({_id: postId})
+      post.visit++
+      post.save()
       const comments = await Comment.find ({postId:req.params.id})
+      const user = req.user
       res.json({
         post,
-        comments
+        comments,
+        user
       })
     } catch (error) {
       res.status(400).send({
@@ -105,7 +109,8 @@ module.exports = {
       const comment = await new Comment({
         owner:req.user._id,
         text: req.body.textComment,
-        postId: req.body.id
+        postId: req.body.id,
+        author: req.user.username
 
       }).save()
       res.json(comment)
@@ -125,8 +130,7 @@ module.exports = {
         error: `An error has occured ${error}`
       })
     }
-  
+}
 
-},
 
 }

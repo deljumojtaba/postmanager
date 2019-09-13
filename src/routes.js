@@ -79,11 +79,10 @@ router.post('/api/add_comment', passport.authenticate('jwt', { session: false })
   PostsController.addComment(req, res)
   
 });
-// router.post('/api/get_comment', passport.authenticate('jwt', { session: false }), (req, res) => {
-//   PostsController.getComment(req, res)
-  
-// });
 
+router.get('/api/all_users', passport.authenticate('jwt', { session: false }),(req, res) => {
+  AuthenticationController.allusers(req, res)
+})
 
 
 }

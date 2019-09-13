@@ -14,9 +14,23 @@
             </div>
             <v-divider></v-divider>
             <div class="py-4 text">{{post.text}}</div>
-            <v-divider v-if="isAuthor"></v-divider>
+            <div class="iconbox">
+            <v-col>
+                <v-btn icon @click="likePost">
+                  <v-icon>favorite_border</v-icon>
+                </v-btn>
+                <span>{{post.like}}</span>   
+            </v-col> 
+            <v-col>
+                <v-btn icon>
+                  <v-icon>streetview</v-icon>
+                </v-btn>
+                <span>{{post.visit}}</span>   
+            </v-col> 
+            </div>   
+            <v-divider v-if="isAuthor || user.role === 'admin'"></v-divider>
           </v-card-text>
-          <v-card-actions v-if="isAuthor">
+          <v-card-actions v-if="isAuthor || user.role === 'admin'">
             <v-spacer></v-spacer>
             <v-btn flat color="orange" @click="edit(post._id)">
               <v-icon class="mr-1">edit</v-icon>
@@ -28,13 +42,27 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-       coment: {{comments}}
-         <v-text-field class="comment"
-              v-model = "comments[0]"
-              label="Regular"
-              outlined
-              readonly
-            ></v-text-field>
+       <div class="comment" v-for="comment in comments" :key="comment">
+             <v-textarea
+            :label="comment.author"
+            :commentId="comment._id"
+            outlined
+            rows="2"
+            readonly
+            row-height="20"
+            v-model="comment.text"
+            
+
+          > 
+          </v-textarea>
+          <v-btn v-if="(comment.author===user.username||user.role==='admin')" flat color="red"
+            
+          @click="deleteComment(id)"
+          :commentId="comment._id">
+              <v-icon class="mr-1">delete</v-icon>
+              delete
+            </v-btn>
+            </div>
             <div class="addcomment">
              <v-textarea
             label="Add Comment"
@@ -73,6 +101,7 @@
 </template>
 
 <script>
+import store from '@/store/store'
 import PostService from '../services/PostService'
 export default {
   name: 'Post',
@@ -80,10 +109,9 @@ export default {
     post: {},
     dialog: false,
     textComment: "",
-    comments: {}
-    
-
-
+    comments: {},
+    user : {},
+    commentId : ""
   }),
  
   methods: {
@@ -102,14 +130,13 @@ export default {
       PostService.addComment(id,textComment)
         .then(() => this.textComment= "")
 
+    },
+    async deleteComment(commentId) {
       
+      // PostService.deleteComment(id)
+      console.log(commentId)
     }
-  //    async mounted() {
-  //     const postId = this.post.id
-  //     const responseComments = await PostService.getComments(postId)
-  //      this.comments = responseComments
-  // }
-
+ 
   },
   computed: {
     isLoading () {
@@ -127,6 +154,7 @@ export default {
       this.$store.dispatch('setLoading', false)
       this.post = result.post
       this.comments = result.comments
+      this.user = result.user
     }
   }
 
@@ -146,11 +174,21 @@ export default {
   .comment {
     border-radius: 10px;
     background-color: whitesmoke ;
+    display: flex;
+    border: 1px solid blue ;
+    margin-bottom: 30px;
+    margin-top: 15px;
+
+
   }
   .addcomment {
     border: 1px solid black ;
     border-radius: 10px;
     display: flex;
     background-color: whitesmoke;
+    padding-top: 40px;
+  }
+  .iconbox {
+    display: flex ;
   }
 </style>

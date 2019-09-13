@@ -55,7 +55,10 @@ export default {
   },
   async getComments (id) {
     const response = await Api().get('/api/get_comment/' + id)  
-  console.log(response.data)
   return response.data
+  },
+  async getAllUser () {
+    const response = await Api().get('/api/all_users')
+    return response.data
   }
 }

@@ -9,12 +9,15 @@ const postSchema = new mongoose.Schema({
   
   visit: {
      type: Number,
-     trim: true
+     trim: true,
+    default:0
+
   },
 
   like: {
     type: Number,
-    trim: true
+    trim: true,
+    default:0
   },
   
   created: {
