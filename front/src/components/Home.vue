@@ -7,8 +7,8 @@
               grid-list-md
               class="mb-2">
         <v-card class="hover-elevation card">
-          <v-card-media :src="post.image" height="200px">
-          </v-card-media>
+          <v-img :src="post.image" height="200px">
+          </v-img>
           <v-card-title primary-title>
             <h3 class="headline mb-0">{{post.title}}</h3>
           </v-card-title>

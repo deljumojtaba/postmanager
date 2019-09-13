@@ -3,9 +3,21 @@
     <v-layout row wrap>
 
       <v-flex xs12 md4 class="text-xs-center">
-        <v-avatar :size="size" >
-          <img src="https://static.licdn.com/scds/common/u/images/themes/katy/ghosts/person/ghost_person_200x200_v1.png" alt="avatar" avatar @click="addavatar(user._id)">
-        </v-avatar>
+       <image-input v-model="avatar">
+        <div slot="activator">
+          <v-avatar size="150px" v-ripple v-if="!avatar" class="grey lighten-3 mb-3">
+            <span>Click to add avatar</span>
+          </v-avatar>
+          <v-avatar size="150px" v-ripple v-else class="mb-3">
+            <img :src="avatar.imageURL" alt="avatar">
+          </v-avatar>
+        </div>
+      </image-input>
+      <v-slide-x-transition>
+        <div v-if="avatar && saved == false">
+          <v-btn class="primary" @click="uploadImage" :loading="saving">Save Avatar</v-btn>
+        </div>
+      </v-slide-x-transition>
       </v-flex>
 
       <v-flex xs12 md8 class="mt-xs">
@@ -40,13 +52,20 @@
 <script>
 import store from '@/store/store'
 import PostService from '../services/PostService'
+import ImageInput from '../components/ImageInput.vue'
 export default {
   name: 'Profile',
   data: () => ({
     size: 200,
     user: {},
-    items: []
+    items: [],
+    avatar: null,
+      saving: false,
+      saved: false
   }),
+    components: {
+    ImageInput: ImageInput
+  },
   methods: {
     setData (user) {
       this.user = user
@@ -69,6 +88,16 @@ export default {
 
          this.$router.push('/user_posts')
         
+    },
+      uploadImage() {
+      this.saving = true
+      setTimeout(() => this.savedAvatar(), 1000)
+      console.log(FormData)
+      PostService.uploadAvatar(FormData)
+    },
+    savedAvatar() {
+      this.saving = false
+      this.saved = true
     }
   },
   computed: {
@@ -89,6 +118,12 @@ export default {
         { icon: 'face', title: 'lastName', subtitle: this.user.lastName ? this.user.lastName : 'No information' },
         { icon: 'phone_iphone', title: 'mobile', subtitle: this.user.mobile ? this.user.mobile : 'No information' }
       ]
+    },
+    avatar: {
+      handler: function() {
+        this.saved = false
+      },
+      deep: true
     }
   },
   beforeRouteEnter (to, from, next) {

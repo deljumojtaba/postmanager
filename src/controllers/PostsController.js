@@ -1,5 +1,7 @@
 const Post = require('../models/post.model')
 const User = require('../models/user.model');
+const Comment = require('../models/comment.model');
+
 
 module.exports = {
   async index (req, res) {
@@ -46,7 +48,11 @@ module.exports = {
     try {
       const postId = req.params.id
       const post = await Post.findOne({_id: postId})
-      res.json(post)
+      const comments = await Comment.find ({postId:req.params.id})
+      res.json({
+        post,
+        comments
+      })
     } catch (error) {
       res.status(400).send({
         error: `An error has occured ${error}`
@@ -83,5 +89,44 @@ module.exports = {
         error: `An error has occured ${error}`
       })
     }
-  }
+  },
+  async deletePost (req, res) {
+    try {
+      const post = await Post.findByIdAndRemove(req.params.id)
+      res.json(post)
+    } catch (error) {
+      res.status(400).send({
+        error: `An error has occured ${error}`
+      })
+    }
+  },
+  async addComment (req, res) {
+    try {
+      const comment = await new Comment({
+        owner:req.user._id,
+        text: req.body.textComment,
+        postId: req.body.id
+
+      }).save()
+      res.json(comment)
+    } catch (error) {
+      res.status(400).send({
+        error: `An error has occured ${error}`
+      })
+    }
+  },
+  async getComment (req, res) {
+    try {
+      console.log(req.body)
+      const comment = await Comment.find ({postId:req.body.postId})
+      res.json(comment)
+    } catch (error) {
+      res.status(400).send({
+        error: `An error has occured ${error}`
+      })
+    }
+  
+
+},
+
 }

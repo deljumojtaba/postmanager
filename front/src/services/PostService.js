@@ -15,6 +15,7 @@ export default {
   },
   async single (id) {
     const response = await Api().get('/api/post/' + id)
+    console.log(response.data)
     return response.data
   },
   async savePost (credentials) {
@@ -40,5 +41,21 @@ export default {
   async userPosts (user) {
     const response = await Api().post('/api/user_posts', user)
     return response.data
+  },
+  async uploadAvatar (credentials) {
+    const response = await Api().post('/api/upload_avatar', credentials)
+    return response.data
+  },
+  async addComment (id,textComment) {
+    const response = await Api().post('/api/add_comment', {
+     textComment,
+      id
+    })
+    return response.data
+  },
+  async getComments (id) {
+    const response = await Api().get('/api/get_comment/' + id)  
+  console.log(response.data)
+  return response.data
   }
 }

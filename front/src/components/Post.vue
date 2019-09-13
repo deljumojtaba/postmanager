@@ -3,8 +3,8 @@
     <v-layout row justify-center wrap>
       <v-flex xs12 lg9>
         <v-card class="hover-elevation">
-          <v-card-media :src="post.image" height="320px">
-          </v-card-media>
+          <v-img :src="post.image" height="320px">
+          </v-img>
           <v-card-title primary-title>
             <h3 class="headline mb-0">{{post.title}}</h3>
           </v-card-title>
@@ -28,6 +28,27 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+       coment: {{comments}}
+         <v-text-field class="comment"
+              v-model = "comments[0]"
+              label="Regular"
+              outlined
+              readonly
+            ></v-text-field>
+            <div class="addcomment">
+             <v-textarea
+            label="Add Comment"
+            outlined
+            rows="3"
+            row-height="25"
+            v-model="textComment"
+          > 
+          </v-textarea>
+          <v-btn flat color="green" @click="addComment(post._id,textComment)">
+              <v-icon class="mr-1">send</v-icon>
+              Send
+            </v-btn>
+            </div>
       </v-flex>
     </v-layout>
     <v-dialog v-model="dialog" max-width="500px">
@@ -42,12 +63,12 @@
           <v-btn flat color="primary" @click.stop="dialog=false">No</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog>       
   </v-container>
   <v-container v-else>
     <v-layout row align-center justify-center class="full-height">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
-    </v-layout>
+    </v-layout>      
   </v-container>
 </template>
 
@@ -57,8 +78,14 @@ export default {
   name: 'Post',
   data: () => ({
     post: {},
-    dialog: false
+    dialog: false,
+    textComment: "",
+    comments: {}
+    
+
+
   }),
+ 
   methods: {
     edit (id) {
       this.$router.push('/edit/' + id)
@@ -70,7 +97,19 @@ export default {
     },
     showDialog () {
 
+    },
+    async addComment (id,textComment) {
+      PostService.addComment(id,textComment)
+        .then(() => this.textComment= "")
+
+      
     }
+  //    async mounted() {
+  //     const postId = this.post.id
+  //     const responseComments = await PostService.getComments(postId)
+  //      this.comments = responseComments
+  // }
+
   },
   computed: {
     isLoading () {
@@ -86,7 +125,8 @@ export default {
     const result = await PostService.single(this.$route.params.id)
     if (result) {
       this.$store.dispatch('setLoading', false)
-      this.post = result
+      this.post = result.post
+      this.comments = result.comments
     }
   }
 
@@ -102,5 +142,15 @@ export default {
     font-size: 16px;
     line-height: 1.5;
     color: rgba(0, 0, 0 , .7);
+  }
+  .comment {
+    border-radius: 10px;
+    background-color: whitesmoke ;
+  }
+  .addcomment {
+    border: 1px solid black ;
+    border-radius: 10px;
+    display: flex;
+    background-color: whitesmoke;
   }
 </style>
