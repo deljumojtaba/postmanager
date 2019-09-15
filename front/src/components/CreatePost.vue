@@ -20,15 +20,11 @@
               multi-line
               required
             ></v-text-field>
-            <v-btn 
-            raised class="primary" 
-            @click="onPickFile"
-            >Upload Image
-            </v-btn>
+            
             <input type="file"
-             style="display:none" 
-             ref="fileInput"
-              accept="image/*"
+             ref="file"
+             @change="pictureSelect"
+
             >
             <v-btn
               :disabled="!valid"
@@ -49,32 +45,40 @@
 
 <script>
 import PostService from '../services/PostService'
+import FormData from "form-data";
+import { constants } from "fs";
+
 export default {
   name: 'CreatePost',
   data: () => ({
     valid: true,
     title: '',
-    image: '',
-    text: ''
+    text: '',
+    file: ''
   }),
   methods: {
-    submit () {
+    pictureSelect() {
+            const file = this.$refs.file.files[0];
+            this.file = file;
+        },
+  async submit () {
       if (this.$refs.form.validate()) {
-        const newPost = {
-          author: JSON.parse(localStorage.getItem('user')).username,        
-          title: this.title,
-          image: this.image,
-          text: this.text
-        }
-        PostService.createPost(newPost)
+        const formData = new FormData();
+        formData.append("file", this.file);
+        formData.append("title", this.title);
+        formData.append("text", this.text);
+       
+      await PostService.createPost(formData)
           .then(() => this.$router.push('/'))
           .catch((error) => console.log(error))
       }
+    }
+      
     },
     onPickFile () {
           this.$refs.fileInput.click()
     }
-  }
+  
 
 }
 </script>

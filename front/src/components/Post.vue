@@ -3,7 +3,7 @@
     <v-layout row justify-center wrap>
       <v-flex xs12 lg9>
         <v-card class="hover-elevation">
-          <v-img :src="post.image" height="320px">
+         <v-img :src="imgPreUrl + post.image" height="320px">          
           </v-img>
           <v-card-title primary-title>
             <h3 class="headline mb-0">{{post.title}}</h3>
@@ -111,7 +111,9 @@ export default {
     textComment: "",
     comments: {},
     user : {},
-    commentId : ""
+    commentId : "",
+    imgPreUrl: "http://localhost:3100/images/post-pictures/"
+
   }),
  
   methods: {

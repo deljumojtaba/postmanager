@@ -1,29 +1,42 @@
 <template>
   <v-container>
     <v-layout row wrap>
-
       <v-flex xs12 md4 class="text-xs-center">
-       <image-input v-model="avatar">
-        <div slot="activator">
-          <v-avatar size="150px" v-ripple v-if="!avatar" class="grey lighten-3 mb-3">
-            <span>Click to add avatar</span>
-          </v-avatar>
-          <v-avatar size="150px" v-ripple v-else class="mb-3">
-            <img :src="avatar.imageURL" alt="avatar">
-          </v-avatar>
-        </div>
-      </image-input>
-      <v-slide-x-transition>
-        <div v-if="avatar && saved == false">
-          <v-btn class="primary" @click="uploadImage" :loading="saving">Save Avatar</v-btn>
-        </div>
-      </v-slide-x-transition>
+        <v-avatar :size="size">
+          <v-img
+            :src="imgPreUrl + user.avatar"
+             id="avatarImage"
+             alt="User Picture"
+          ></v-img>
+        </v-avatar>
+        <div class="file">
+                    <v-form @submit.prevent="changeProfilePicture" enctype="multipart/form-data">
+                        <div class="fields d-flex flex-wrap justify-content-center">
+                            <input
+                                class="col-6 text-center"
+                                type="file"
+                                ref="file"
+                                accept="image/*"
+                                @change="pictureSelect"
+                            />
+                        </div>
+                        <div class="fields">
+                            <v-btn flat color="green" class="mt-2" @click="changeProfilePicture">
+              <v-icon class="mr-1">cloud_upload</v-icon>
+                              Upload</v-btn>
+                        </div>
+                    </v-form>
+                    <form @submit.prevent="deleteProfilePicture" enctype="multipart/form-data">
+                        <div class="fields">
+                            <v-btn flat color="red" class="mt-2">
+              <v-icon class="mr-1" @click="deleteProfilePicture">cloud_off</v-icon>
+                              Delete</v-btn>
+                        </div>
+                    </form>
+                </div>
       </v-flex>
-
       <v-flex xs12 md8 class="mt-xs">
-        <v-list two-line subheader>
-        
-          
+        <v-list two-line subheader>     
           <v-list-tile v-for="item in items" :key="item.title" >
             <v-list-tile-avatar>
               <v-icon color="primary">{{ item.icon }}</v-icon>
@@ -48,8 +61,6 @@
               <v-icon class="mr-1">people</v-icon>
               all users
             </v-btn>
-
-
           </div>
         </v-list>
       </v-flex>
@@ -60,20 +71,20 @@
 <script>
 import store from '@/store/store'
 import PostService from '../services/PostService'
-import ImageInput from '../components/ImageInput.vue'
+import FormData from "form-data";
+import { constants } from "fs";
+import { connect } from "tls";
+import axios from 'axios'
 export default {
   name: 'Profile',
   data: () => ({
     size: 200,
     user: {},
     items: [],
-    avatar: null,
-      saving: false,
-      saved: false
+    imgPreUrl: "http://localhost:3100/images/profile-pictures/",
+    file: ""
   }),
-    components: {
-    ImageInput: ImageInput
-  },
+   
   methods: {
     setData (user) {
       this.user = user
@@ -82,7 +93,9 @@ export default {
         { icon: 'person', title: 'Username', subtitle: this.user.username },
         { icon: 'face', title: 'firstName', subtitle: this.user.firstName ? this.user.firstName : 'No information' },
         { icon: 'face', title: 'lastName', subtitle: this.user.lastName ? this.user.lastName : 'No information' },
-        { icon: 'phone_iphone', title: 'mobile', subtitle: this.user.mobile ? this.user.mobile : 'No information' }
+        { icon: 'phone_iphone', title: 'mobile', subtitle: this.user.mobile ? this.user.mobile : 'No information' },
+        { icon: 'avatar', title: 'avatar', subtitle: this.user.avatar ? this.user.avatar : 'No information' }
+
       ]
     },
      async removeUser (user) {
@@ -97,23 +110,37 @@ export default {
          this.$router.push('/user_posts')
         
     },
-      uploadImage() {
-      this.saving = true
-      setTimeout(() => this.savedAvatar(), 1000)
-      console.log(FormData)
-      PostService.uploadAvatar(FormData)
-    },
-    savedAvatar() {
-      this.saving = false
-      this.saved = true
-    },
+    
     async AllUsers() {
       // PostService.getAllUser()
       // .then(() => this.$router.push('/allusers'))
         // .catch(error => console.log(error))
         this.$router.push('/allusers')
 
+    },
+  
+    async pictureSelect() {
+      const file = this.$refs.file.files[0];
+      this.file = file;
+      },
+    async changeProfilePicture() {
+      const formData = new FormData()
+      formData.append("file", this.file)
+      await PostService.uploadAvatar(formData)
+      const user = await PostService.userinfo()
+      this.user = user 
+
+
+
+    },
+    async  deleteProfilePicture() {
+      await PostService.deleteAvatar()
+      const user = await PostService.userinfo()
+      this.user = user 
+      
+      
     }
+                   
   },
   computed: {
     isLoading () {
@@ -131,15 +158,12 @@ export default {
         { icon: 'person', title: 'Username', subtitle: this.user.username },
         { icon: 'face', title: 'firstName', subtitle: this.user.firstName ? this.user.firstName : 'No information' },
         { icon: 'face', title: 'lastName', subtitle: this.user.lastName ? this.user.lastName : 'No information' },
-        { icon: 'phone_iphone', title: 'mobile', subtitle: this.user.mobile ? this.user.mobile : 'No information' }
+        { icon: 'phone_iphone', title: 'mobile', subtitle: this.user.mobile ? this.user.mobile : 'No information' },
+        { icon: 'avatar', title: 'avatar', subtitle: this.user.avatar ? this.user.avatar : 'No information' }
+        
       ]
-    },
-    avatar: {
-      handler: function() {
-        this.saved = false
-      },
-      deep: true
     }
+   
   },
   beforeRouteEnter (to, from, next) {
     const user = store.getters.getUser

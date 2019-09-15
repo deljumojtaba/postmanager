@@ -4,21 +4,21 @@
       <panel title="Edit a post">
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
-            v-model="post.title"
-            label="Title"
-            required
+            v-model="title"
+            label="title"
+            
           ></v-text-field>
           <v-text-field
-            v-model="post.image"
-            label="Image"
-            required
-          ></v-text-field>
-          <v-text-field
-            v-model="post.text"
-            label="Text"
+            v-model="text"
+            label="text"
             multi-line
-            required
+            
           ></v-text-field>
+           <input type="file"
+             ref="file"
+             @change="pictureSelect"
+
+            >
           <v-btn
             :disabled="!valid"
             @click="submit"
@@ -36,26 +36,35 @@
 
 <script>
   import PostService from '../services/PostService'
+  import FormData from "form-data";
+  import { constants } from "fs";
+import { connect } from "tls";
+
   export default {
     name: 'EditPost',
     data: () => ({
       valid: true,
-      post: {
+      
         title: '',
-        image: '',
-        text: ''
-      }
+        text: '',
+        file:''
+    
     }),
     methods: {
-      submit () {
+      pictureSelect() {
+            const file = this.$refs.file.files[0];
+            this.file = file;
+        },
+     async submit () {
         if (this.$refs.form.validate()) {
-          const newPost = {
-            id: this.$route.params.id,
-            title: this.post.title,
-            image: this.post.image,
-            text: this.post.text
-          }
-          PostService.savePost(newPost)
+            const formData = new FormData();
+           
+            formData.append("file", this.file);
+            formData.append("title", this.title);
+            formData.append("text", this.text);
+            formData.append("id", this.$route.params.id);
+
+         await  PostService.savePost(formData)
             .then(() => this.backToPost())
             .catch(error => console.log(error))
         }
@@ -64,8 +73,11 @@
         this.$router.push('/post/' + this.$route.params.id)
       }
     },
-    async created () {
-      this.post = await PostService.single(this.$route.params.id)
+    async mounted () {
+      const result = await PostService.single(this.$route.params.id)
+      this.title = result.post.title
+      this.text = result.post.text
+
     }
   }
 </script>

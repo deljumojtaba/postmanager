@@ -7,7 +7,7 @@
               grid-list-md
               class="mb-2">
         <v-card class="hover-elevation card">
-          <v-img :src="post.image" height="200px">
+         <v-img :src="imgPreUrl + post.image" height="200px">
           </v-img>
           <v-card-title primary-title>
             <h3 class="headline mb-0">{{post.title}}</h3>
@@ -51,7 +51,9 @@
       posts: null,
       page: 1,
       length: 1,
-      size: 'md'
+      size: 'md',
+      imgPreUrl: "http://localhost:3100/images/post-pictures/"
+
     }),
     computed: {
       isLoading () {

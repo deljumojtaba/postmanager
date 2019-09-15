@@ -5,8 +5,13 @@ export default {
     const response = await Api().get('/api/posts')
     return response.data
   },
-  async createPost (credentials) {
-    const response = await Api().post('/api/create', credentials)
+  async createPost (formData) {
+    const response = await Api().post('/api/create', formData)
+    return response.data
+  },
+  async addPostImage (formData) {
+    const response = await Api().post('/api/add_post_image', formData)
+    console.log(response.data)
     return response.data
   },
   async changePage (page) {
@@ -15,11 +20,10 @@ export default {
   },
   async single (id) {
     const response = await Api().get('/api/post/' + id)
-    console.log(response.data)
     return response.data
   },
-  async savePost (credentials) {
-    const response = await Api().post('/api/save_post', credentials)
+  async savePost (formData) {
+    const response = await Api().post('/api/save_post', formData)
     return response.data
   },
   async deletePost (id) {
@@ -42,8 +46,9 @@ export default {
     const response = await Api().post('/api/user_posts', user)
     return response.data
   },
-  async uploadAvatar (credentials) {
-    const response = await Api().post('/api/upload_avatar', credentials)
+  async uploadAvatar (FormData) {
+    const response = await Api().post('/api/add_avatar', FormData)
+    console.log(response.data)
     return response.data
   },
   async addComment (id,textComment) {
@@ -60,5 +65,13 @@ export default {
   async getAllUser () {
     const response = await Api().get('/api/all_users')
     return response.data
-  }
+  },
+  async deleteAvatar () {
+    const response = await Api().get('/api/delete_avatar')
+    return response.data
+  },
+  async userinfo () {
+    const response = await Api().get('/api/userinfo')
+    return response.data
+  },
 }

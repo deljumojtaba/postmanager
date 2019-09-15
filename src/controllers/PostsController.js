@@ -1,6 +1,13 @@
 const Post = require('../models/post.model')
 const User = require('../models/user.model');
 const Comment = require('../models/comment.model');
+const uploadPost = require('../tools/uploadPost');
+const jwt = require('jsonwebtoken')
+const multer = require('multer');
+const uuidv4 = require('uuid/v4');
+const database = require('../database')
+
+
 
 
 module.exports = {
@@ -20,19 +27,31 @@ module.exports = {
   },
   async createPost (req, res) {
     try {
-      const post = await new Post({
-        title:req.body.title,
-        text: req.body.text,
-        author: req.body.author
-
-      }).save()
-      res.json(post)
-    } catch (error) {
-      res.status(400).send({
-        error: `An error has occured ${error}`
-      })
-    }
+     uploadPost (req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+          return res.status(500).json(err)
+        } else if (err) {
+          return res.status(500).json(err)
+        } else {
+          const post = await new Post({
+            title:req.body.title,
+            text: req.body.text,
+            author: req.user.username,
+            image:req.file.filename
+    
+          }).save()
+          res.json(post)
+        }
+      })  
+        } catch (error) {
+          res.status(400).send({
+            error: `An error has occured ${error}`
+          })
+        } 
+      
+      
   },
+ 
   async changePage (req, res) {
     try {
       const {page} = req.body
@@ -74,15 +93,31 @@ module.exports = {
     }
   },
   async savePost (req, res) {
+    console.log(req.body)
     try {
-      const post = await Post.findByIdAndUpdate(req.body.id, req.body)
-      post.save()
-      res.json(post)
-    } catch (error) {
-      res.status(400).send({
-        error: `An error has occured ${error}`
-      })
-    }
+      uploadPost (req, res, async function (err) {
+         if (err instanceof multer.MulterError) {
+           return res.status(500).json(err)
+         } else if (err) {
+           return res.status(500).json(err)
+         } else {
+           const post = await database.User.findByIdAndUpdate(req.body.id)
+           console.log(post)
+            post.title = req.body.title,
+            post.text = req.body.text,
+            post.image = req.file.filename
+            post.save()
+     
+           }
+           res.json(post)
+         })
+       
+         } catch (error) {
+           res.status(400).send({
+             error: `An error has occured ${error}`
+           })
+         } 
+       
   },
   async deletePost (req, res) {
     try {

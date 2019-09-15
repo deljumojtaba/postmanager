@@ -34,8 +34,11 @@ module.exports = (router) => {
     PostsController.index(req, res)
   })
 
-  router.post('/api/create', (req, res) => {
+  router.post('/api/create',  passport.authenticate('jwt', { session: false }), (req, res) => {
     PostsController.createPost(req, res)
+  })
+  router.post('/api/add_post_image', (req, res) => {
+    PostsController.addPostImage(req, res)
   })
 
   router.post('/api/page', (req, res) => {
@@ -53,7 +56,7 @@ module.exports = (router) => {
     PostsController.viewOne(req, res)
   })
 
-  router.post('/api/save_post', (req, res) => {
+  router.post('/api/save_post', passport.authenticate('jwt', { session: false }) ,(req, res) => {
     PostsController.savePost(req, res)
   })
 
@@ -84,5 +87,15 @@ router.get('/api/all_users', passport.authenticate('jwt', { session: false }),(r
   AuthenticationController.allusers(req, res)
 })
 
-
+router.post('/api/add_avatar', passport.authenticate('jwt', { session: false }), (req, res) => {
+  AuthenticationController.addAvatar(req, res)
+  
+});
+router.get('/api/delete_avatar', passport.authenticate('jwt', { session: false }), (req, res) => {
+  AuthenticationController.deleteAvatar(req, res)
+  
+});
+router.get('/api/userinfo', passport.authenticate('jwt', { session: false }),(req, res) => {
+  AuthenticationController.userinfo(req, res)
+})
 }
